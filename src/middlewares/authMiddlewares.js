@@ -11,12 +11,12 @@ export async function checkSignUp(req, res, next) {
     }
 
     try {
-        const user = db.query(`SELECT * FROM users WHERE name=$1 OR email=$2`, [
-            value.name,
-            value.email,
-        ]);
+        const user = await db.query(
+            `SELECT * FROM users WHERE name=$1 OR email=$2`,
+            [value.name, value.email]
+        );
 
-        if (user) {
+        if (user.rowCount) {
             return res.status(409).send("email ou nome já cadastrados");
         }
     } catch (e) {
