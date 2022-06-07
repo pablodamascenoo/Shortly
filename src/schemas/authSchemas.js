@@ -7,7 +7,7 @@ export const signUpSchema = Joi.object({
     repassword: Joi.string()
         .required()
         .valid(Joi.ref("password"))
-        .messages({ "any.only": "{{#label}} does not match" }),
+        .messages({ "any.only": "as senhas não são iguais" }),
 });
 
 export const signInSchema = Joi.object({
