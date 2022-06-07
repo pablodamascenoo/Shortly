@@ -1,10 +1,12 @@
 import { signInSchema, signUpSchema } from "../schemas/authSchemas.js";
+import pkg from "joi-translation-pt-br";
 import db from "../db.js";
+const { messages } = pkg;
 
 export async function checkSignUp(req, res, next) {
     const signUp = req.body;
 
-    const { error, value } = signUpSchema.validate(signUp);
+    const { error, value } = signUpSchema.validate(signUp, { messages });
 
     if (error) {
         return res.status(422).send(error.details[0].message);
