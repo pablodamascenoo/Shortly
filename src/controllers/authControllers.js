@@ -31,7 +31,7 @@ export async function signIn(req, res) {
             [userId]
         );
 
-        const data = { sessionId };
+        const data = { sessionId: sessionId.rows[0].id };
         const config = { expiresIn: 60 * 60 * 24 };
 
         const token = jwt.sign(data, process.env.JWT_SECRET, config);

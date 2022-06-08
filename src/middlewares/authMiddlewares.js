@@ -1,5 +1,6 @@
 import { signInSchema, signUpSchema } from "../schemas/authSchemas.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import pkg from "joi-translation-pt-br";
 import db from "../db.js";
 const { messages } = pkg;
@@ -56,5 +57,29 @@ export async function checkSignIn(req, res, next) {
     } catch (e) {
         console.log(e);
         return res.status(500).send(e);
+    }
+}
+
+export async function verifyToken(req, res, next) {
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ", "");
+
+    if (!token) return res.status(401).send("você não está autenticado");
+
+    const chaveSecreta = process.env.JWT_SECRET;
+
+    try {
+        const dados = jwt.verify(token, chaveSecreta);
+
+        const user = await db.query(
+            `SELECT u.* FROM sessions s JOIN users u ON s."userId" = u.id WHERE s.id=$1`,
+            [dados.sessionId]
+        );
+
+        res.locals.user = user.rows[0];
+        next();
+    } catch (error) {
+        console.log(error);
+        return res.status(401).send("você não está autenticado");
     }
 }
