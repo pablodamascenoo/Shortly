@@ -21,6 +21,9 @@ export async function validateUrl(req, res, next) {
 export async function verifyUrlId(req, res, next) {
     const { id } = req.params;
 
+    if (isNaN(parseInt(id)))
+        return res.status(422).send("o id deve ser numérico");
+
     try {
         const url = await db.query(`SELECT * FROM urls WHERE id=$1`, [id]);
 

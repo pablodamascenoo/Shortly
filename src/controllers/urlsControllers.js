@@ -18,3 +18,12 @@ export async function postUrl(req, res) {
         return res.sendStatus(500);
     }
 }
+
+export async function getUrl(req, res) {
+    const { url } = res.locals;
+
+    delete url.createdAt;
+    delete url.userId;
+
+    return res.status(200).send(url);
+}
