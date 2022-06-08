@@ -76,6 +76,8 @@ export async function verifyToken(req, res, next) {
             [dados.sessionId]
         );
 
+        if (!user.rowCount)
+            return res.status(401).send("você não está autenticado");
         res.locals.user = user.rows[0];
         next();
     } catch (error) {
