@@ -13,7 +13,7 @@ export async function findUserId(req, res, next) {
         if (!user.rowCount)
             return res.status(404).send("usuário não encontrado");
 
-        res.locals.id = id;
+        res.locals.user = user.rows[0];
         next();
     } catch (error) {
         failure(error);

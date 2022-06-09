@@ -2,7 +2,7 @@ import db from "../db.js";
 import { failure } from "../misc/chalkAlerts.js";
 
 export async function getUser(req, res) {
-    const { id } = res.locals;
+    const { user } = res.locals;
 
     let count = 0;
 
@@ -13,8 +13,19 @@ export async function getUser(req, res) {
         JOIN urls ur ON u.id = ur."userId"
         WHERE u.id = $1
         `,
-            [id]
+            [user.id]
         );
+
+        if (!userObj.rowCount) {
+            const userInfo = {
+                id: user.id,
+                name: user.name,
+                visitCount: 0,
+                shortenedUrls: [],
+            };
+
+            return res.status(200).send(userInfo);
+        }
 
         const shortenedUrls = userObj.rows.map((url) => {
             count += Number(url.views);
