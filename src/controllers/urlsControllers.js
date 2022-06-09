@@ -32,7 +32,8 @@ export async function openUrl(req, res) {
     const { url } = res.locals;
 
     try {
-        await db.query(`INSERT INTO "urlsHistory" ("urlId") VALUES ($1)`, [
+        await db.query(`UPDATE urls SET views=$1 WHERE id=$2`, [
+            Number(url.views) + 1,
             Number(url.id),
         ]);
         return res.redirect(url.url);
