@@ -33,3 +33,16 @@ export async function openUrl(req, res) {
 
     res.redirect(url);
 }
+
+export async function deleteUrl(req, res) {
+    const { url } = res.locals;
+
+    try {
+        await db.query("DELETE FROM urls WHERE id=$1", [url.id]);
+
+        return res.sendStatus(204);
+    } catch (error) {
+        failure(error);
+        return res.sendStatus(500);
+    }
+}

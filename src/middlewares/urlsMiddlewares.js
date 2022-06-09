@@ -56,3 +56,13 @@ export async function verifyShortUrl(req, res, next) {
         return res.status(500).send(error);
     }
 }
+
+export async function verifyUrlOwner(req, res, next) {
+    const { url } = res.locals;
+    const { user } = res.locals;
+
+    if (url.userId !== user.id)
+        return res.status(401).send("a rota não pertence a esse usuário");
+
+    next();
+}
