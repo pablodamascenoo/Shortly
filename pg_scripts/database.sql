@@ -9,7 +9,7 @@ password text not null,
 
 create table sessions (
 id serial primary key,
-"userId" integer not null references "user"("id"),
+"userId" integer not null references "users"("id"),
 "createdAt" timestamp not null default now()
 );
 
