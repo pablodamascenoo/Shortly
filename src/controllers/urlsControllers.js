@@ -6,13 +6,15 @@ export async function postUrl(req, res) {
     const { user } = res.locals;
     const { url } = res.locals;
 
+    const shortUrl = nanoid(8);
+
     try {
         await db.query(
             `INSERT INTO urls ("shortUrl", url, "userId") VALUES ($1, $2, $3)`,
-            [nanoid(8), url, user.id]
+            [shortUrl, url, user.id]
         );
 
-        return res.sendStatus(201);
+        return res.status(201).send({ shortUrl });
     } catch (error) {
         failure(error);
         return res.sendStatus(500);
