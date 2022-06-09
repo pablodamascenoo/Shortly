@@ -29,8 +29,6 @@ export async function getUser(req, res) {
             return obj;
         });
 
-        console.log(userObj.rows);
-
         const userInfo = {
             id: userObj.rows[0].id,
             name: userObj.rows[0].name,
