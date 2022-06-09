@@ -56,8 +56,10 @@ export async function getUser(req, res) {
 
 export async function getRanking(req, res) {
     try {
-        const usersObj = await db.query(`
-        SELECT u.id, u.name, count(ur) as "linksCount", SUM(ur.views) as "visitCount"
+        const users = await db.query(`
+        SELECT u.id, u.name, 
+        count(ur) as "linksCount",
+        CASE WHEN SUM(ur.views) is NULL THEN 0 ELSE SUM(ur.views) END as "visitCount"
         FROM users u
         LEFT JOIN urls ur ON ur."userId"=u.id
         GROUP BY u.id, u.name
@@ -65,12 +67,7 @@ export async function getRanking(req, res) {
         LIMIT 10
         `);
 
-        const users = usersObj.rows.map((user) => {
-            if (user.visitCount === null) user.visitCount = "0";
-            return user;
-        });
-
-        return res.status(200).send(users);
+        return res.status(200).send(users.rows);
     } catch (error) {
         failure(error);
         return res.status(500).send("erro no servidor!");
