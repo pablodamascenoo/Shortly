@@ -1,6 +1,6 @@
 import db from "../db.js";
 import { nanoid } from "nanoid";
-import { failure } from "../misc/chalkAlerts.js";
+import { failure, success } from "../misc/chalkAlerts.js";
 
 export async function postUrl(req, res) {
     const { user } = res.locals;
@@ -29,9 +29,17 @@ export async function getUrl(req, res) {
 }
 
 export async function openUrl(req, res) {
-    const { url } = res.locals.url;
+    const { url } = res.locals;
 
-    res.redirect(url);
+    try {
+        await db.query(`INSERT INTO "urlsHistory" ("urlId") VALUES ($1)`, [
+            Number(url.id),
+        ]);
+        return res.redirect(url.url);
+    } catch (error) {
+        failure(error);
+        return res.sendStatus(500);
+    }
 }
 
 export async function deleteUrl(req, res) {
