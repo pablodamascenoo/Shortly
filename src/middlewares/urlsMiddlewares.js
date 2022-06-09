@@ -36,3 +36,23 @@ export async function verifyUrlId(req, res, next) {
         return res.status(500).send(error);
     }
 }
+
+export async function verifyShortUrl(req, res, next) {
+    const { shortUrl } = req.params;
+
+    if (!shortUrl) return res.sendStatus(404);
+
+    try {
+        const url = await db.query(`SELECT * FROM urls WHERE "shortUrl"=$1`, [
+            shortUrl,
+        ]);
+
+        if (!url.rowCount) return res.status(404).send("url não encontrada");
+
+        res.locals.url = url.rows[0];
+        next();
+    } catch (error) {
+        failure(error);
+        return res.status(500).send(error);
+    }
+}

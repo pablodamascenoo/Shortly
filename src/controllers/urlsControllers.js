@@ -27,3 +27,9 @@ export async function getUrl(req, res) {
 
     return res.status(200).send(url);
 }
+
+export async function openUrl(req, res) {
+    const { url } = res.locals.url;
+
+    res.redirect(url);
+}
