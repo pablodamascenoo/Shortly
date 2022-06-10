@@ -26,6 +26,7 @@ export async function getUrl(req, res) {
 
     delete url.createdAt;
     delete url.userId;
+    delete url.views;
 
     return res.status(200).send(url);
 }
